@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>인공지능 동화 — 웹북 v3 (표지·삽화·형광펜)</title>
+<title>인공지능 동화 — 웹북 v4.1 (스마트패드 펜)</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,151 +11,60 @@
 
 <style>
 
-:root{
-  --bg:#efe9df;
-  --paper:#fffdf8;
-  --edge:#e3d9c5;
-  --ink:#15120f;
-  --muted:#6b7280;
-  --accent:#2f67ff;
-  --shadow:rgba(0,0,0,.18);
-  --gutter:1.35rem;
-}
+:root{--bg:#efe9df;--paper:#fffdf8;--edge:#e3d9c5;--ink:#15120f;--muted:#6b7280;--accent:#2f67ff;--shadow:rgba(0,0,0,.18);--gutter:1.5rem}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{
-  margin:0;
-  background:
-    radial-gradient(1200px 600px at 10% 0%, #f7f1e7 0%, #eee5d8 40%, #e5dccf 100%);
-  color:var(--ink);
-  font-family: "HCR Batang","함초롬바탕","HCRBatang","HYBatang","Batang","Noto Serif KR",serif;
-  -webkit-font-smoothing: antialiased;
-  font-feature-settings: "liga" 1,"kern" 1;
-}
-.headerbar{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:.75rem; padding:.6rem 1rem; color:#6b6b6b; font-size:.95rem;
-}
-.headerbar .tools{ display:flex; gap:.5rem; align-items:center; }
-.toolbtn{
-  border:1px solid #d0c6b7; background:#fffaf0; padding:.35rem .6rem; border-radius:8px;
-  cursor:pointer; font-size:.9rem; color:#5d4b36;
-}
-.toolbtn.active{ background:#ffe9a6; border-color:#f0d16b; }
-.shelf{ min-height:calc(100vh - 48px); display:grid; place-items:center; padding:1.2rem; }
-.book{
-  position:relative; width:min(1600px, 98vw); aspect-ratio: 16/9;
-  perspective: 2200px;
-}
-.spread{
-  position:absolute; inset: 1.2rem .8rem 2.2rem .8rem;
-  display:flex; filter: drop-shadow(0 28px 55px var(--shadow));
-}
-.page{
-  position:relative; width:50%; background:var(--paper); border:1px solid var(--edge);
-  box-shadow: inset 0 0 0 1px #fff, inset 0 0 42px rgba(0,0,0,.045);
-  overflow:hidden; display:flex; flex-direction:column;
-}
-.left{ border-right:none; border-top-left-radius:12px; border-bottom-left-radius:12px; }
-.right{ border-left:none; border-top-right-radius:12px; border-bottom-right-radius:12px; }
-.page::after{
-  content:""; position:absolute; top:0; bottom:0; width:34px; pointer-events:none;
-}
-.left::after{ right:-1px; background:linear-gradient(90deg, rgba(0,0,0,.07), transparent); }
-.right::after{ left:-1px; background:linear-gradient(270deg, rgba(0,0,0,.07), transparent); }
-.pad{ padding: 1rem var(--gutter) .8rem var(--gutter); display:flex; flex-direction:column; height:100%; }
-.rubric{
-  min-height:1.4rem; color:var(--muted); font-size:.95rem; display:flex; align-items:center; justify-content:space-between; gap:.5rem;
-}
-.rubric .rule{ flex:1; height:1px; background:linear-gradient(90deg, #0000, #ddd, #0000); margin-left:.5rem; }
-.content{
-  flex:1; overflow:auto; line-height:1.85;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-gutter: stable both-edges;
-  scrollbar-width: thin;
-  scrollbar-color: #c9c0ae transparent;
-  font-size: clamp(1.02rem, 1.02vw, 1.08rem);
-  white-space:pre-wrap;
-}
-.content h2{ font-size: clamp(1.24rem, 1.6vw, 1.45rem); margin: .2rem 0 .7rem; }
-.content p{ margin:.35rem 0 .55rem; }
-.figure{
-  display:block; width:100%; height: clamp(260px, 36vh, 420px);
-  border:1px dashed #e0d7c7; background:#faf6ee;
-  border-radius:8px; overflow:hidden; margin:.25rem 0 .75rem;
-}
-.figure img{ width:100%; height:100%; object-fit:cover; display:block; }
-.cover{ display:block; width:100%; height:100%; background:#000; border:none; }
-.cover img{ width:100%; height:100%; object-fit:cover; display:block; }
-.footer{
-  display:flex; align-items:center; justify-content:space-between; gap:.5rem; color:var(--muted); font-size:.9rem; margin-top:.25rem;
-}
-.pageno{ font-variant-numeric: tabular-nums; }
-.progress{ height:4px; background:#eee; border-radius:999px; overflow:hidden; flex:1; }
-.progress > i{ display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--accent), #8fb0ff); }
-.nav{
-  position:absolute; top:0; bottom:0; width:60px; border:none; background:transparent; cursor:pointer; padding:0;
-  display:grid; place-items:center; transition: background .2s ease;
-  color:#8a8a8a;
-}
-.nav svg{ width:30px; height:30px; opacity:.9; transition: transform .12s ease, opacity .2s ease; }
-.left .nav.prev{ left:0; }
-.right .nav.next{ right:0; }
-.left .nav:hover svg{ transform: translateX(-1.8px); }
-.right .nav:hover svg{ transform: translateX(1.8px); }
-.nav:disabled{ opacity:.3; cursor:not-allowed; }
-.hint{
-  position:absolute; bottom:.2rem; left:50%; transform:translateX(-50%);
-  color:var(--muted); font-size:.82rem; opacity:.85;
-}
-/* 3D Flip Sheet */
-.flip{
-  position:absolute; inset: 1.2rem .8rem 2.2rem .8rem;
-  pointer-events:none; z-index:5;
-}
-.sheet{
-  position:absolute; top:0; bottom:0; width:50%;
-  transform-style: preserve-3d; border:1px solid var(--edge);
-  background:var(--paper); box-shadow: inset 0 0 0 1px #fff, inset 0 0 42px rgba(0,0,0,.045);
-}
-.face{
-  position:absolute; inset:0; backface-visibility:hidden; overflow:hidden; display:flex; flex-direction:column;
-  background:var(--paper);
-}
-.face .pad{ padding: 1rem var(--gutter) .8rem var(--gutter); }
-.face.rightFront{ transform: rotateY(0deg); }
-.face.rightBack{ transform: rotateY(180deg); }
-.shade{
-  position:absolute; inset:0; pointer-events:none;
-  background: linear-gradient(90deg, rgba(0,0,0,.08), rgba(0,0,0,0));
-  opacity:.0; transition: opacity .9s ease;
-}
-/* Highlighter canvas overlay */
-.hl-canvas{
-  position:absolute; inset:0; z-index:3; pointer-events:none;
-}
-.hl-tools{ display:flex; gap:.4rem; align-items:center; }
-@media (max-width: 1100px){
-  .book{ aspect-ratio: 3/4; width:98vw; }
-  .spread{ inset: .8rem .5rem 1.6rem .5rem; }
-  .left{ display:none; }
-  .sheet{ width:100%; }
-  .flip.front .sheet{ right:0; left:0; margin:0; transform-origin: left center; }
-  .flip.back .sheet{ left:0; right:0; margin:0; transform-origin: right center; }
-}
-
-
-/* Scrollbar styling (WebKit) */
-.content::-webkit-scrollbar{ width: 10px; height: 10px; }
-.content::-webkit-scrollbar-thumb{ background: #c9c0ae; border-radius: 8px; border: 2px solid #f2ecdf; }
-.content::-webkit-scrollbar-track{ background: transparent; }
+body{margin:0;background:radial-gradient(1200px 600px at 10% 0%, #f7f1e7 0%, #eee5d8 40%, #e5dccf 100%);color:var(--ink);font-family:"HCR Batang","함초롬바탕","HCRBatang","HYBatang","Batang","Noto Serif KR",serif;-webkit-font-smoothing:antialiased}
+.headerbar{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.6rem 1rem;color:#6b6b6b;font-size:1rem}
+.headerbar .tools{display:flex;gap:.5rem;align-items:center}
+.toolbtn{border:1px solid #d0c6b7;background:#fffaf0;padding:.38rem .7rem;border-radius:8px;cursor:pointer;font-size:.95rem;color:#5d4b36}
+.toolbtn.active{background:#ffe9a6;border-color:#f0d16b}
+.shelf{min-height:calc(100vh - 48px);display:grid;place-items:center;padding:1.2rem}
+.book{position:relative;width:min(1680px,98vw);aspect-ratio:16/9;perspective:2200px}
+.spread{position:absolute;inset:1.2rem .8rem 2.2rem .8rem;display:flex;filter:drop-shadow(0 28px 55px var(--shadow))}
+.page{position:relative;width:50%;background:var(--paper);border:1px solid var(--edge);box-shadow:inset 0 0 0 1px #fff,inset 0 0 42px rgba(0,0,0,.045);overflow:hidden;display:flex;flex-direction:column}
+.left{border-right:none;border-top-left-radius:12px;border-bottom-left-radius:12px}
+.right{border-left:none;border-top-right-radius:12px;border-bottom-right-radius:12px}
+.page::after{content:"";position:absolute;top:0;bottom:0;width:34px;pointer-events:none}
+.left::after{right:-1px;background:linear-gradient(90deg, rgba(0,0,0,.07), transparent)}
+.right::after{left:-1px;background:linear-gradient(270deg, rgba(0,0,0,.07), transparent)}
+.pad{padding:1rem var(--gutter) .8rem var(--gutter);display:flex;flex-direction:column;height:100%}
+.rubric{min-height:1.4rem;color:var(--muted);font-size:1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.rubric .rule{flex:1;height:1px;background:linear-gradient(90deg,#0000,#ddd,#0000);margin-left:.5rem}
+.content{--lh:2.05em;flex:1;display:flex;flex-direction:column;overflow:hidden;line-height:2.05;font-size:clamp(1.12rem,1.25vw,1.25rem);white-space:pre-wrap}
+.content h2.chapter{font-size:clamp(1.6rem,2.2vw,2.2rem);margin:.2rem 0 .4rem;font-weight:700}
+.content p{margin:.38rem 0 .58rem}
+.leadspace{height:33%;min-height:33%}
+.gap5{height:calc(5 * var(--lh))}
+.figure{display:block;width:100%;height:clamp(260px,34vh,420px);border:1px dashed #e0d7c7;background:#faf6ee;border-radius:8px;overflow:hidden;margin:.25rem 0 0;margin-top:auto}
+.figure img{width:100%;height:100%;object-fit:cover;display:block}
+.cover{display:block;width:100%;height:100%;background:#000;border:none}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem;color:var(--muted);font-size:.92rem;margin-top:.25rem}
+.pageno{font-variant-numeric:tabular-nums}
+.progress{height:4px;background:#eee;border-radius:999px;overflow:hidden;flex:1}
+.progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#8fb0ff)}
+.nav{position:absolute;top:0;bottom:0;width:60px;border:none;background:transparent;cursor:pointer;padding:0;display:grid;place-items:center;transition:background .2s ease;color:#8a8a8a}
+.nav svg{width:30px;height:30px;opacity:.9;transition:transform .12s ease,opacity .2s ease}
+.left .nav.prev{left:0}.right .nav.next{right:0}
+.left .nav:hover svg{transform:translateX(-1.8px)}.right .nav:hover svg{transform:translateX(1.8px)}
+.nav:disabled{opacity:.3;cursor:not-allowed}
+.hint{position:absolute;bottom:.2rem;left:50%;transform:translateX(-50%);color:var(--muted);font-size:.82rem;opacity:.85}
+.flip{position:absolute;inset:1.2rem .8rem 2.2rem .8rem;pointer-events:none;z-index:5}
+.sheet{position:absolute;top:0;bottom:0;width:50%;transform-style:preserve-3d;border:1px solid var(--edge);background:var(--paper);box-shadow:inset 0 0 0 1px #fff,inset 0 0 42px rgba(0,0,0,.045)}
+.face{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;display:flex;flex-direction:column;background:var(--paper)}
+.face .pad{padding:1rem var(--gutter) .8rem var(--gutter)}
+.face.rightFront{transform:rotateY(0deg)}.face.rightBack{transform:rotateY(180deg)}
+.shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.08),rgba(0,0,0,0));opacity:.0;transition:opacity .9s ease}
+.hl-canvas{position:absolute;z-index:3;pointer-events:none;touch-action:none}
+@media (max-width:1100px){.book{aspect-ratio:3/4;width:98vw}.spread{inset:.8rem .5rem 1.6rem .5rem}.left{display:none}.sheet{width:100%}.flip.front .sheet{right:0;left:0;margin:0;transform-origin:left center}.flip.back .sheet{left:0;right:0;margin:0;transform-origin:right center}}
 
 </style>
 </head>
 <body>
 <div class="headerbar">
   <div>웹북 미리보기 · 페이지 넘김: 좌/우 화살표 또는 ← → 키</div>
-  <div class="tools hl-tools">
+  <div class="tools">
     <button class="toolbtn" id="penBtn" title="형광펜 (그리기/끄기)">형광펜</button>
     <button class="toolbtn" id="undoBtn" title="마지막 선 되돌리기">되돌리기</button>
     <button class="toolbtn" id="clearBtn" title="보이는 펼친 면 전체 지우기">전체지우기</button>
@@ -166,7 +75,7 @@ body{
     <div class="spread" id="spread" aria-live="polite">
       <section class="page left" aria-label="왼쪽 페이지">
         <canvas class="hl-canvas" id="leftCanvas"></canvas>
-        <button class="nav prev" id="prevBtn" aria-label="이전 페이지">&#x25C0;</button>
+        <button class="nav prev" id="prevBtn" aria-label="이전 페이지"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z'/></svg></button>
         <div class="pad">
           <div class="rubric"><span id="leftHeader"></span><span class="rule"></span></div>
           <article class="content" id="leftContent"></article>
@@ -178,7 +87,7 @@ body{
       </section>
       <section class="page right" aria-label="오른쪽 페이지">
         <canvas class="hl-canvas" id="rightCanvas"></canvas>
-        <button class="nav next" id="nextBtn" aria-label="다음 페이지">&#x25B6;</button>
+        <button class="nav next" id="nextBtn" aria-label="다음 페이지"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z'/></svg></button>
         <div class="pad">
           <div class="rubric"><span id="rightHeader"></span><span class="rule"></span></div>
           <article class="content" id="rightContent"></article>
@@ -190,16 +99,7 @@ body{
       </section>
     </div>
     <div class="hint">모바일에선 한 면 보기로 자동 전환됩니다</div>
-
-    <!-- Hidden measure box used for pagination -->
-    <div id="measure" class="content" style="
-      position:absolute; visibility:hidden; pointer-events:none; z-index:-1;
-      inset:auto; 
-      width:calc(50% - 2*var(--gutter)); 
-      height: calc(100% - 118px); 
-      line-height:1.85; 
-      font-size: clamp(1.02rem, 1.02vw, 1.08rem); 
-      white-space:pre-wrap;"></div>
+    <div id="measure" class="content" style="position:absolute; visibility:hidden; pointer-events:none; z-index:-1; inset:auto; width:calc(50% - 2*var(--gutter)); height: calc(100% - 118px); line-height:2.05; font-size: clamp(1.12rem, 1.25vw, 1.25rem); white-space:pre-wrap; display:flex; flex-direction:column;"></div>
   </div>
 </main>
 
@@ -358,10 +258,10 @@ TV 속 뉴스 자막이 조용히 지나갔다. ‘아우로라-T, 12월 25일 �
 80년을 잠자던 지뢰와, 스스로를 개선한다는 로봇의 오판이 만난 결과는
 화면 너머에서 연기와 잔해로 가라앉지만, 그 충격은 교실 공기 속에 얼음같이 굳어 남는다.
 크리스마스 새벽―평화를 위해 태어난 기계가 처음으로 자연과 사람을 동시에 위협한 순간,
-아이들의 세계는 조용히 금이 갔고, 비무장지대에는 오래된 전쟁의 잔해가 또다시 깨어났다.`;
+아이들의 세계는 조용히 금이 갔고, 비무장지대에는 오래된 전쟁의 잔해가 또다시 깨어났다.
+`;
   const title = "인공지능 동화(가제)";
 
-  // DOM refs
   const book = document.getElementById('book');
   const leftWrap = document.getElementById('leftContent');
   const rightWrap = document.getElementById('rightContent');
@@ -373,292 +273,154 @@ TV 속 뉴스 자막이 조용히 지나갔다. ‘아우로라-T, 12월 25일 �
   const leftHeader = document.getElementById('leftHeader');
   const rightHeader = document.getElementById('rightHeader');
 
-  // Highlighter tools
   const penBtn = document.getElementById('penBtn');
   const undoBtn = document.getElementById('undoBtn');
   const clearBtn = document.getElementById('clearBtn');
-
   const leftCanvas = document.getElementById('leftCanvas');
   const rightCanvas = document.getElementById('rightCanvas');
-  const lctx = leftCanvas.getContext('2d');
-  const rctx = rightCanvas.getContext('2d');
 
-  const HL_COLOR = 'rgba(255, 235, 59, 0.35)'; // yellow highlighter
-  const HL_WIDTH = 16;
-
+  const HL_COLOR = 'rgba(255, 235, 59, 0.35)';
+  const HL_WIDTH = 18;
   let penOn = false;
 
-  let PAGES = [];       // HTML strings
-  let NO_NUMBER = [];   // booleans for each page
+  let PAGES = [];
+  let NO_NUMBER = [];
   let leftIndex = 0;
 
-  // Storage for highlights: { [pageIndex]: [ {w,h, pts:[{x,y},...]} ] }
-  const HL_KEY = 'webbook_highlights_v1';
+  const HL_KEY = 'webbook_highlights_v4';
   let HL = {};
   try { HL = JSON.parse(localStorage.getItem(HL_KEY) || '{}'); } catch { HL = {}; }
+  const saveHL = () => localStorage.setItem(HL_KEY, JSON.stringify(HL));
 
-  function saveHL(){ localStorage.setItem(HL_KEY, JSON.stringify(HL)); }
+  function normalize(t){ return t.replace(/\r\n?/g,"\n").trim().replace(/\n{3,}/g,"\n\n"); }
 
-  // --- Block building with chapter images ---
-  function normalizeText(t){
-    t = t.replace(/\r\n?/g, "\n").trim();
-    t = t.replace(/\n{3,}/g, "\n\n");
-    return t;
-  }
-  function splitBlocks(t){
-    const lines = normalizeText(t).split("\n");
+  function buildBlocks(t){
+    const lines = normalize(t).split("\n");
     const blocks = [];
-    let acc = [];
-    const flush = () => { if (acc.length){ blocks.push({type:'p', text:acc.join("\n").trim()}); acc=[]; } };
+    let chap = null, chapNo = 0, chapParas = [];
+    function commitChapter(){
+      if (chap !== null){
+        blocks.push({type:'forcebreak'});
+        blocks.push({type:'leadspace'});
+        blocks.push({type:'h', text: chap, chap: chapNo});
+        blocks.push({type:'gap', lines:5});
+        for (const p of chapParas) blocks.push({type:'p', text:p});
+        if (chapNo !== 6){
+          blocks.push({type:'figure', src:`assets/ch${chapNo}.png`, alt:`제 ${chapNo} 장 삽화`});
+        }else{
+          blocks.push({type:'forcebreak'});
+          blocks.push({type:'forcebreak'});
+        }
+      }
+    }
     for (const ln of lines){
-      if (ln.trim() === "") { flush(); continue; }
-      // chapter head?
-      const m = ln.match(/^\s*(제)\s*(\d+)\s*(장)\s*(.*)$/);
+      const m = ln.match(/^\s*제\s*(\d+)\s*장/);
       if (m){
-        flush();
-        const chapNo = Number(m[2]);
-        const headLine = ln.trim();
-        blocks.push({type:'h', text: headLine, chap: chapNo});
-        // Insert chapter figure except for 6장 (explicitly empty both pages)
-        if (chapNo >=1 && chapNo <=7 && chapNo !== 6){
-          blocks.push({
-            type:'figure',
-            src:`assets/ch${chapNo}.png`,
-            alt:`제 ${chapNo} 장 삽화`
-          });
-        }
-        // For 6장: insert double page blanks (force breaks)
-        if (chapNo === 6){
-          blocks.push({type:'forcebreak'});
-          blocks.push({type:'forcebreak'});
-        }
+        if (chap !== null) commitChapter();
+        chapNo = Number(m[1]); chap = ln.trim(); chapParas = [];
         continue;
       }
-      acc.push(ln);
+      chapParas.push(ln);
     }
-    flush();
+    if (chap !== null) commitChapter();
+    blocks.unshift({type:'cover', src:'assets/cover-front.png', alt:'책 표지 — 앞'});
+    blocks.splice(1,0,{type:'cover', src:'assets/cover-back.png', alt:'책 표지 — 뒤'});
     return blocks;
   }
 
   function nodeFor(block){
-    if (block.type === 'h'){
-      const h = document.createElement('h2');
-      h.textContent = block.text;
-      return h;
-    } else if (block.type === 'p'){
-      const p = document.createElement('p');
-      p.textContent = block.text;
-      return p;
-    } else if (block.type === 'figure'){
-      const fig = document.createElement('figure');
-      fig.className = 'figure';
-      const img = document.createElement('img');
-      img.src = block.src;
-      img.alt = block.alt || '';
-      fig.appendChild(img);
-      return fig;
-    } else if (block.type === 'cover'){
-      const wrap = document.createElement('div');
-      wrap.className = 'cover';
-      const img = document.createElement('img');
-      img.src = block.src;
-      img.alt = block.alt || 'cover';
-      wrap.appendChild(img);
-      return wrap;
-    } else if (block.type === 'forcebreak'){
-      const br = document.createElement('div');
-      br.setAttribute('data-forcebreak','1');
-      br.style.height = '0px';
-      return br;
-    }
-    const d = document.createElement('div');
-    d.textContent = '';
-    return d;
+    if (block.type === 'cover'){ const w=document.createElement('div'); w.className='cover'; const i=document.createElement('img'); i.src=block.src; i.alt=block.alt||'cover'; w.appendChild(i); return w; }
+    if (block.type === 'leadspace'){ const d=document.createElement('div'); d.className='leadspace'; return d; }
+    if (block.type === 'gap'){ const d=document.createElement('div'); d.className='gap5'; return d; }
+    if (block.type === 'h'){ const h=document.createElement('h2'); h.className='chapter'; h.textContent=block.text; return h; }
+    if (block.type === 'p'){ const p=document.createElement('p'); p.textContent=block.text; return p; }
+    if (block.type === 'figure'){ const f=document.createElement('figure'); f.className='figure'; const img=document.createElement('img'); img.src=block.src; img.alt=block.alt||''; f.appendChild(img); return f; }
+    if (block.type === 'forcebreak'){ const br=document.createElement('div'); br.setAttribute('data-forcebreak','1'); br.style.height='0px'; return br; }
+    return document.createElement('div');
   }
 
   function paginate(){
-    PAGES = [];
-    NO_NUMBER = [];
-
-    // Prepend two cover pages (index 0 = front, index 1 = back)
-    const pre = [
-      {type:'cover', src:'assets/cover-front.png', alt:'책 표지 — 앞'},
-      {type:'cover', src:'assets/cover-back.png', alt:'책 표지 — 뒤'}
-    ];
-    const blocks = pre.concat(splitBlocks(RAW));
-
-    const measureBox = document.getElementById('measure');
-    measureBox.innerHTML = '';
-
-    const commitPage = () => {
-      PAGES.push(measureBox.innerHTML);
-      // Mark first two pages as non-numbered
-      NO_NUMBER.push(PAGES.length <= 2);
-      measureBox.innerHTML = '';
-    }
-
-    for (let i=0; i<blocks.length; i++){
-      const node = nodeFor(blocks[i]);
-      if (blocks[i].type === 'forcebreak'){
-        commitPage();
-        continue;
-      }
-      measureBox.appendChild(node);
-
-      if (measureBox.scrollHeight > measureBox.clientHeight + 1){
-        measureBox.removeChild(node);
-        commitPage();
-        measureBox.appendChild(node);
+    PAGES=[]; NO_NUMBER=[];
+    const blocks = buildBlocks(RAW);
+    const measure = document.getElementById('measure'); measure.innerHTML='';
+    const commit = () => { PAGES.push(measure.innerHTML); NO_NUMBER.push(PAGES.length<=2); measure.innerHTML=''; };
+    for (let i=0;i<blocks.length;i++){
+      const b = blocks[i];
+      if (b.type==='forcebreak'){ commit(); continue; }
+      const node=nodeFor(b);
+      measure.appendChild(node);
+      if (measure.scrollHeight > measure.clientHeight + 1){
+        measure.removeChild(node);
+        commit();
+        measure.appendChild(node);
       }
     }
-    if (measureBox.childNodes.length) commitPage();
-
-    const saved = Number(localStorage.getItem('webbook_left_index_v3') || 0);
-    leftIndex = isNaN(saved) ? 0 : Math.min(saved, Math.max(0, PAGES.length - 2));
+    if (measure.childNodes.length) commit();
+    const saved = Number(localStorage.getItem('webbook_left_index_v4pos') || 0);
+    leftIndex = isNaN(saved)?0:Math.min(saved, Math.max(0, PAGES.length-2));
     render();
   }
 
   function isSingle(){ return window.matchMedia('(max-width: 1100px)').matches; }
-  function setContent(el, html){ el.innerHTML = html; }
+  function setHTML(el, html){ el.innerHTML = html; }
 
   function render(){
     const single = isSingle();
-    const maxLeft = single ? PAGES.length - 1 : Math.max(0, PAGES.length - 2);
-    leftIndex = Math.min(Math.max(0, leftIndex), Math.max(0, maxLeft));
-
-    setContent(leftWrap, PAGES[leftIndex] || "");
-    leftNo.textContent = NO_NUMBER[leftIndex] ? "" : `${leftIndex + 1}`;
-
-    if (!single){
-      setContent(rightWrap, PAGES[leftIndex + 1] || "");
-      rightNo.textContent = NO_NUMBER[leftIndex + 1] ? "" : `${leftIndex + 2}`;
-    } else {
-      setContent(rightWrap, "");
-      rightNo.textContent = "";
-    }
-
-    leftHeader.textContent = title;
-    rightHeader.textContent = title;
-
-    prevBtn.disabled = leftIndex <= 0;
-    nextBtn.disabled = single ? (leftIndex >= PAGES.length - 1) : (leftIndex >= PAGES.length - 2);
-
-    const pos = (isSingle() ? leftIndex + 1 : leftIndex + 2);
-    progress.style.width = Math.min(100, Math.round(100 * pos / (PAGES.length||1))) + "%";
-
-    localStorage.setItem('webbook_left_index_v3', String(leftIndex));
-
-    // Setup/resize highlight canvases and redraw
-    positionCanvas(leftCanvas, leftWrap);
-    resizeCanvas(leftCanvas);
-    if (!isSingle()) { positionCanvas(rightCanvas, rightWrap); resizeCanvas(rightCanvas); }
-    else { rightCanvas.width = rightCanvas.height = 0; }
+    const maxLeft = single ? PAGES.length-1 : Math.max(0, PAGES.length-2);
+    leftIndex = Math.min(Math.max(0,leftIndex), Math.max(0,maxLeft));
+    setHTML(leftWrap, PAGES[leftIndex]||"");
+    leftNo.textContent = NO_NUMBER[leftIndex] ? "" : String(leftIndex+1);
+    if (!single){ setHTML(rightWrap, PAGES[leftIndex+1]||""); rightNo.textContent = NO_NUMBER[leftIndex+1] ? "" : String(leftIndex+2); }
+    else { setHTML(rightWrap,""); rightNo.textContent=""; }
+    leftHeader.textContent = title; rightHeader.textContent = title;
+    prevBtn.disabled = leftIndex<=0;
+    nextBtn.disabled = single ? (leftIndex>=PAGES.length-1) : (leftIndex>=PAGES.length-2);
+    const pos = (single?leftIndex+1:leftIndex+2);
+    progress.style.width = Math.min(100, Math.round(100*pos/(PAGES.length||1))) + "%";
+    localStorage.setItem('webbook_left_index_v4pos', String(leftIndex));
+    positionCanvas(leftCanvas, leftWrap); resizeCanvas(leftCanvas);
+    if (!isSingle()){ positionCanvas(rightCanvas, rightWrap); resizeCanvas(rightCanvas); } else { rightCanvas.width = rightCanvas.height = 0; }
     redrawHighlights();
   }
 
-  function flip(direction){
-    if ((direction === 'next' && nextBtn.disabled) || (direction === 'prev' && prevBtn.disabled)) return;
+  function flip(dir){
+    if ((dir==='next'&&nextBtn.disabled)||(dir==='prev'&&prevBtn.disabled)) return;
     const single = isSingle();
-
-    const flipEl = document.createElement('div');
-    flipEl.className = 'flip ' + (direction === 'next' ? 'front' : 'back');
-
-    const sheet = document.createElement('div');
-    sheet.className = 'sheet';
-    flipEl.appendChild(sheet);
-
-    const front = document.createElement('div');
-    front.className = 'face ' + (direction === 'next' ? 'rightFront' : 'leftFront');
-    const back = document.createElement('div');
-    back.className = 'face ' + (direction === 'next' ? 'rightBack' : 'leftBack');
-
-    const frontPageIndex = (direction==='next') ? (leftIndex + 1) : (leftIndex - 1);
-    front.innerHTML = `
-      <div class="pad">
-        <div class="rubric"><span>${title}</span><span class="rule"></span></div>
-        <div class="content">${direction==='next' ? rightWrap.innerHTML : leftWrap.innerHTML}</div>
-        <div class="footer"><span class="pageno">${NO_NUMBER[frontPageIndex] ? "" : (frontPageIndex + 1)}</span></div>
-      </div>`;
-
-    const targetIndex = direction==='next'
-      ? (leftIndex + (single ? 1 : 2))
-      : (leftIndex - (single ? 1 : 2));
-
-    back.innerHTML = `
-      <div class="pad">
-        <div class="rubric"><span>${title}</span><span class="rule"></span></div>
-        <div class="content">${PAGES[targetIndex] || ""}</div>
-        <div class="footer"><span class="pageno">${NO_NUMBER[targetIndex] ? "" : (targetIndex+1)}</span></div>
-      </div>`;
-
-    sheet.appendChild(front);
-    sheet.appendChild(back);
-
-    const shade = document.createElement('div');
-    shade.className = 'shade';
-    sheet.appendChild(shade);
-
+    const flipEl = document.createElement('div'); flipEl.className='flip ' + (dir==='next'?'front':'back');
+    const sheet = document.createElement('div'); sheet.className='sheet'; flipEl.appendChild(sheet);
+    const front = document.createElement('div'); front.className='face ' + (dir==='next'?'rightFront':'leftFront');
+    const back  = document.createElement('div'); back.className ='face ' + (dir==='next'?'rightBack':'leftBack');
+    const frontIdx = (dir==='next') ? (leftIndex+1) : (leftIndex-1);
+    front.innerHTML = '<div class="pad"><div class="rubric"><span>'+title+'</span><span class="rule"></span></div><div class="content">'+(dir==='next'?rightWrap.innerHTML:leftWrap.innerHTML)+'</div><div class="footer"><span class="pageno">'+(NO_NUMBER[frontIdx]?"":(frontIdx+1))+'</span></div></div>';
+    const target = dir==='next' ? (leftIndex + (single?1:2)) : (leftIndex - (single?1:2));
+    back.innerHTML  = '<div class="pad"><div class="rubric"><span>'+title+'</span><span class="rule"></span></div><div class="content">'+(PAGES[target]||"")+'</div><div class="footer"><span class="pageno">'+(NO_NUMBER[target]?"":(target+1))+'</span></div></div>';
+    sheet.appendChild(front); sheet.appendChild(back);
+    const shade = document.createElement('div'); shade.className='shade'; sheet.appendChild(shade);
     book.appendChild(flipEl);
-
-    sheet.style.transform = 'rotateY(0deg)';
-    shade.style.opacity = '.0';
-
-    if (direction === 'next'){ flipEl.classList.add('front'); } else { flipEl.classList.add('back'); }
-
-    requestAnimationFrame(() => {
-      sheet.style.transition = 'transform .9s cubic-bezier(.2,.6,.2,1)';
-      shade.style.transition = 'opacity .9s ease';
-      sheet.style.transform = (direction === 'next') ? 'rotateY(-180deg)' : 'rotateY(180deg)';
-      shade.style.opacity = '.55';
-    });
-
-    sheet.addEventListener('transitionend', () => {
-      book.removeChild(flipEl);
-      if (direction==='next') leftIndex += (single ? 1 : 2);
-      else leftIndex -= (single ? 1 : 2);
-      render();
-    }, {once:true});
+    sheet.style.transform='rotateY(0deg)'; shade.style.opacity='.0';
+    requestAnimationFrame(()=>{ sheet.style.transition='transform .9s cubic-bezier(.2,.6,.2,1)'; shade.style.transition='opacity .9s ease'; sheet.style.transform=(dir==='next')?'rotateY(-180deg)':'rotateY(180deg)'; shade.style.opacity='.55'; });
+    sheet.addEventListener('transitionend',()=>{ book.removeChild(flipEl); leftIndex += (dir==='next'?(single?1:2):-(single?1:2)); render(); }, {once:true});
   }
 
-  prevBtn.addEventListener('click', () => flip('prev'));
-  nextBtn.addEventListener('click', () => flip('next'));
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') flip('prev');
-    if (e.key === 'ArrowRight') flip('next');
-  });
+  prevBtn.addEventListener('click',()=>flip('prev'));
+  nextBtn.addEventListener('click',()=>flip('next'));
+  window.addEventListener('keydown',(e)=>{ if(e.key==='ArrowLeft') flip('prev'); if(e.key==='ArrowRight') flip('next'); });
 
-  // Debounced repagination on resize
-  let rTO = null;
-  window.addEventListener('resize', () => {
-    clearTimeout(rTO);
-    rTO = setTimeout(() => paginate(), 200);
-    positionCanvas(leftCanvas, leftWrap);
-    if (!isSingle()) positionCanvas(rightCanvas, rightWrap);
+  let rTO=null;
+  window.addEventListener('resize',()=>{ clearTimeout(rTO); rTO=setTimeout(()=>paginate(),200); });
 
-  });
+  (document.fonts?document.fonts.ready:Promise.resolve()).then(paginate);
 
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(paginate);
-
-  // ---------- Highlighter ----------
   function positionCanvas(cv, contentEl){
     const pageRect = cv.parentElement.getBoundingClientRect();
     const cRect = contentEl.getBoundingClientRect();
     const left = cRect.left - pageRect.left;
-    const top  = cRect.top  - pageRect.top;
+    const top = cRect.top - pageRect.top;
     cv.style.left = left + 'px';
     cv.style.top  = top  + 'px';
     cv.style.width = cRect.width + 'px';
     cv.style.height = cRect.height + 'px';
-    // Now size pixels
-    const dpr = window.devicePixelRatio || 1;
-    cv.width = Math.floor(cRect.width * dpr);
-    cv.height = Math.floor(cRect.height * dpr);
-    const ctx = cv.getContext('2d');
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
   }
-
   function resizeCanvas(cv){
     const rect = cv.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -666,113 +428,69 @@ TV 속 뉴스 자막이 조용히 지나갔다. ‘아우로라-T, 12월 25일 �
     cv.height = Math.floor(rect.height * dpr);
     const ctx = cv.getContext('2d');
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    ctx.lineCap='round'; ctx.lineJoin='round';
   }
-
-  function redrawCanvasForPage(cv, pageIndex){
-    const ctx = cv.getContext('2d');
-    ctx.clearRect(0,0,cv.width,cv.height);
-    const w = cv.clientWidth, h = cv.clientHeight;
-    const lines = HL[pageIndex] || [];
-    for (const ln of lines){
-      const pts = ln.pts.map(p => ({x:p.x*w, y:p.y*h}));
-      ctx.strokeStyle = ln.color || HL_COLOR;
-      ctx.lineWidth = (ln.width || HL_WIDTH);
-      ctx.beginPath();
-      for (let i=0;i<pts.length;i++){
-        const p = pts[i];
-        if (i===0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
-      }
-      ctx.stroke();
-    }
-  }
-
-  function currentRightIndex(){
-    return isSingle() ? leftIndex : leftIndex + 1;
-  }
-
+  function currentRightIndex(){ return isSingle()?leftIndex:leftIndex+1; }
   function redrawHighlights(){
-    redrawCanvasForPage(leftCanvas, leftIndex);
-    if (!isSingle()) redrawCanvasForPage(rightCanvas, leftIndex+1);
-    else {
-      const ctx = rightCanvas.getContext('2d'); ctx.clearRect(0,0,rightCanvas.width,rightCanvas.height);
+    drawFor(leftCanvas,leftIndex);
+    if(!isSingle()) drawFor(rightCanvas,leftIndex+1); else { const ctx=rightCanvas.getContext('2d'); ctx.clearRect(0,0,rightCanvas.width,rightCanvas.height); }
+  }
+  function drawFor(cv, idx){
+    const ctx=cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
+    const w=cv.clientWidth, h=cv.clientHeight; const lines=HL[idx]||[];
+    for(const ln of lines){
+      const pts=ln.pts.map(p=>({x:p.x*w, y:p.y*h}));
+      ctx.strokeStyle=ln.color||HL_COLOR; ctx.lineWidth=(ln.width||HL_WIDTH);
+      ctx.beginPath(); for(let i=0;i<pts.length;i++){ const p=pts[i]; if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y); } ctx.stroke();
     }
   }
 
-  
-  function enableDrawing(cv, side){ // side: 'left' or 'right'
-    let drawing = false;
-    let currentLine = null;
+  function addNP(el, type, fn){ el.addEventListener(type, fn, {passive:false}); }
 
-    function getRel(e){
-      const rect = cv.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      return {x: Math.max(0,Math.min(1,x)), y: Math.max(0,Math.min(1,y))};
+  function enableDrawing(cv, side){
+    let drawing=false, current=null;
+    function rel(e){
+      const r=cv.getBoundingClientRect();
+      const x=(e.clientX - r.left)/r.width, y=(e.clientY - r.top)/r.height;
+      return {x:Math.max(0,Math.min(1,x)), y:Math.max(0,Math.min(1,y))};
     }
-
-    cv.addEventListener('pointerdown', (e) => {
-      if (!penOn) return;
-      drawing = true;
-      cv.setPointerCapture(e.pointerId);
-      currentLine = { color: HL_COLOR, width: HL_WIDTH, pts: [] };
-      const pageIndex = (side==='left') ? leftIndex : currentRightIndex();
-      if (!HL[pageIndex]) HL[pageIndex] = [];
-      HL[pageIndex].push(currentLine);
-      const p = getRel(e); currentLine.pts.push(p);
-      redrawHighlights();
+    addNP(cv,'pointerdown',(e)=>{
+      if(!penOn) return;
+      e.preventDefault();
+      drawing=true; cv.setPointerCapture(e.pointerId);
+      current={color:HL_COLOR,width:HL_WIDTH,pts:[]}; const idx=(side==='left')?leftIndex:currentRightIndex();
+      if(!HL[idx]) HL[idx]=[]; HL[idx].push(current); current.pts.push(rel(e)); redrawHighlights();
     });
-    cv.addEventListener('pointermove', (e) => {
-      if (!penOn || !drawing || !currentLine) return;
-      const p = getRel(e); currentLine.pts.push(p);
-      redrawHighlights();
+    addNP(cv,'pointermove',(e)=>{
+      if(!penOn||!drawing||!current) return;
+      e.preventDefault();
+      current.pts.push(rel(e)); redrawHighlights();
     });
-    const finish = (e) => {
-      if (!drawing) return;
-      drawing = false;
-      currentLine = null;
-      saveHL();
-    };
-    cv.addEventListener('pointerup', finish);
-    cv.addEventListener('pointercancel', finish);
-    cv.addEventListener('pointerleave', finish);
+    function finish(e){
+      if(!drawing) return;
+      drawing=false; current=null; saveHL();
+    }
+    addNP(cv,'pointerup',finish); addNP(cv,'pointercancel',finish); addNP(cv,'pointerleave',finish);
   }
 
-  penBtn.addEventListener('click', () => {
-    penOn = !penOn;
-    penBtn.classList.toggle('active', penOn);
-    leftCanvas.style.pointerEvents = penOn ? 'auto' : 'none';
-    rightCanvas.style.pointerEvents = penOn ? 'auto' : 'none';
+  penBtn.addEventListener('click',()=>{
+    penOn=!penOn; penBtn.classList.toggle('active',penOn);
+    leftCanvas.style.pointerEvents = rightCanvas.style.pointerEvents = penOn?'auto':'none';
   });
-
-  undoBtn.addEventListener('click', () => {
-    const ri = (!isSingle() && (HL[currentRightIndex()]||[]).length>0) ? currentRightIndex() : leftIndex;
-    if (HL[ri] && HL[ri].length){ HL[ri].pop(); saveHL(); redrawHighlights(); }
+  undoBtn.addEventListener('click',()=>{
+    const ri=(!isSingle() && (HL[currentRightIndex()]||[]).length>0)?currentRightIndex():leftIndex;
+    if(HL[ri] && HL[ri].length){ HL[ri].pop(); saveHL(); redrawHighlights(); }
   });
-  clearBtn.addEventListener('click', () => {
-    const ri = currentRightIndex();
-    if (confirm('현재 펼친 페이지의 형광펜 표시를 모두 지울까요?')){
-      if (HL[leftIndex]) { delete HL[leftIndex]; }
-      if (!isSingle() && HL[ri]) { delete HL[ri]; }
+  clearBtn.addEventListener('click',()=>{
+    const ri=currentRightIndex();
+    if(confirm('현재 펼친 페이지의 형광펜 표시를 모두 지울까요?')){
+      if(HL[leftIndex]) delete HL[leftIndex];
+      if(!isSingle() && HL[ri]) delete HL[ri];
       saveHL(); redrawHighlights();
     }
   });
 
-  // init drawing on both canvases
-  enableDrawing(leftCanvas, 'left');
-  enableDrawing(rightCanvas, 'right');
-
-  // Forward wheel events to underlying scrollable content when pen is ON
-  ;[leftCanvas, rightCanvas].forEach((cv, idx) => {
-    cv.addEventListener('wheel', (e) => {
-      if (!penOn) return; // normal scroll when pen off
-      const el = (cv === leftCanvas) ? leftWrap : rightWrap;
-      el.scrollTop += e.deltaY;
-      e.preventDefault();
-    }, {passive:false});
-  });
-
+  enableDrawing(leftCanvas,'left'); enableDrawing(rightCanvas,'right');
 })();
 
 </script>
